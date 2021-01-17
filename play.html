@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<head>
+    <title>Cards game by n4n5</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <script type="application/javascript" src="//its-just-nans.github.io/js/useful.js"></script>
+    <script type="application/javascript" src="//its-just-nans.github.io/js/smollPopUp.js"></script>
+    <script type="application/javascript" src="./useful.js"></script>
+    <!--- README script and style -->
+    <link rel="stylesheet" href="//unpkg.com/@highlightjs/cdn-assets@10.4.1/styles/default.min.css">
+    <link rel="stylesheet" href="//its-just-nans.github.io/styleREADME.css">
+    <script type="application/javascript" src="https://unpkg.com/showdown/dist/showdown.min.js"></script>
+    <script type="application/javascript" src="//unpkg.com/@highlightjs/cdn-assets@10.4.1/highlight.min.js"></script>
+</head>
+<body>
+    <div id="content">
+    </div>
+<script>
+if(window.location.hash == '#import'){
+    let content = document.getElementById('content');
+    content.innerHTML = '';
+    let input = document.createElement('input');
+    input.type = "file";
+    content.appendChild(input);
+    input.onchange = function(){
+        var selectedFile = this.files[0];
+        var reader = new FileReader();
+        reader.onload = function(){
+            try{
+                var allCards = JSON.parse(reader.result);
+                input.remove();
+                var indexing = 0;
+                let buttonPrevious = document.createElement('button');
+                buttonPrevious.innerHTML = "<-";
+                buttonPrevious.onclick = function(){
+                    if(document.getElementById("card").className.includes("flipped")){
+                    document.getElementById("card").className = document.getElementById("card").className.replace(" flipped", '')
+                    }
+                    if((indexing-1) >= 0 ){
+                        indexing = indexing - 1;
+                    loadCard(allCards["cards"][indexing], "fr");
+                }
+            };
+            content.appendChild(buttonPrevious);
+            let buttonNext = document.createElement('button');
+            buttonNext.innerHTML = "->";
+            buttonNext.onclick = function(){
+                if(document.getElementById("card").className.includes("flipped")){
+                    document.getElementById("card").className = document.getElementById("card").className.replace(" flipped", '')
+                }
+                if((indexing+1) < allCards["cards"].length ){
+                    indexing = indexing + 1;
+                    loadCard(allCards["cards"][indexing], "fr");
+                }
+            };
+            content.appendChild(buttonNext);
+            let buttonFlip = document.createElement('button');
+            buttonFlip.innerHTML = "flip card";
+            buttonFlip.onclick = function(){
+                let classes = document.getElementById("card").className.split(' ')
+                if(document.getElementById("card").className.includes("flipped")){
+                    document.getElementById("card").className = document.getElementById("card").className.replace(" flipped", '')
+                }else{
+                    document.getElementById("card").className += " flipped";
+                }
+            }
+            content.appendChild(buttonFlip);
+            let card = document.createElement("div");
+            card.id = "card";
+            card.className = "card";
+            content.appendChild(card);
+            let front = document.createElement("div");
+            front.className = "front";
+            card.appendChild(front);
+            let back = document.createElement("div");
+            back.className = "back";
+            card.appendChild(back);
+            
+            loadCard(allCards["cards"][indexing], "fr");
+        }catch(e){
+            console.log(e);
+            smollPopUp({title: "Error", content : e.toString() }, "ko");
+        }
+        };
+        reader.readAsText(selectedFile);
+    }
+}else{
+    //render table
+    //https://api.github.com/repos/Its-Just-Nans/cards-game/contents/data/
+}
+
+</script>
+</body>

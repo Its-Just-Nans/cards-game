@@ -1,5 +1,8 @@
 {
 	"version": "0.0.1",
+	"name":"",
+	"autor":"",
+	"description":"",
 	"cards":[
 		{
 			"bigKeywords":"",
@@ -33,11 +36,11 @@
 			},
 			"quizz":[
 				{
-					"quizz-type":"qcm",
+					"type":"qcm",
 					"mutli": false,
-					"questions":"",
-					"answers": [" answer 1",  "answer 2"],
-					"correct-answers":[" answer 1"]
+					"question":"L'ingénierie de trafic :",
+					"answers": ["correspond à tenir compte de contraintes autres que la seule topologie dans l'établissement des routes (congestion à éviter, QoS à assurer)", "correspond à décider comment répartir le trafic dans le réseau de l'ISP", "consiste à modifier les paquets IP pour les rendre plus performants", "ne dicte pas de toujours prendre le plus court chemin entre une source et une destination", "dicte de toujours prendre le plus court chemin entre une source et une destination"],
+					"correct-answers":[0, 1, 3]
 				}
 			]
 		},

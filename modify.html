@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<head>
+    <title>Cards game by n4n5</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <script type="application/javascript" src="//its-just-nans.github.io/js/useful.js"></script>
+    <script type="application/javascript" src="//its-just-nans.github.io/js/smollPopUp.js"></script>
+    <script type="application/javascript" src="./useful.js"></script>
+    <!--- README script and style -->
+    <link rel="stylesheet" href="//unpkg.com/@highlightjs/cdn-assets@10.4.1/styles/default.min.css">
+    <link rel="stylesheet" href="//its-just-nans.github.io/styleREADME.css">
+    <script type="application/javascript" src="https://unpkg.com/showdown/dist/showdown.min.js"></script>
+    <script type="application/javascript" src="//unpkg.com/@highlightjs/cdn-assets@10.4.1/highlight.min.js"></script>
+</head>
+<body>
+    <div id="content">
+
+    </div>
+<script>
+var allCards;
+if(window.location.hash == '#import'){
+    let content = document.getElementById('content');
+    content.innerHTML = '';
+    let input = document.createElement('input');
+    input.type = "file";
+    content.appendChild(input);
+    input.onchange = function(){
+        let selectedFile = this.files[0];
+        let reader = new FileReader();
+        reader.onload = function(){
+            try{
+                allCards = JSON.parse(reader.result);
+            }catch(error){
+                console.log(error);
+            }
+            input.remove();
+            fillCardsTable();
+        };
+        reader.readAsText(selectedFile);
+    };
+}else{
+    //render table
+    //https://api.github.com/repos/Its-Just-Nans/cards-game/contents/data/
+}
+
+function fillCardsTable(){
+    let inputDownload = document.createElement('button');
+    inputDownload.innerHTML = "Télécharger le jeu de cartes";
+    inputDownload.onclick = function(){
+        downloadObjectAsJson(allCards, "cards");
+    };
+    content.appendChild(inputDownload);
+}
+</script>
+</body>
