@@ -11,7 +11,7 @@
 				"fr":"Paramètre de main() en C"
 			},
 			"content": {
-				"content-type":"readme",
+				"contentType":"readme",
 				"fr": "`argv[0]` contiendra tout le temps le nom du programme\n\n```\nint main(int argc, char *argv[]){\n\tfor(int o=0; o< argc; o++){\n\t\tprintf(\"Argument %d : %s\\n\", o, argv[o]);\n\t}\n\treturn 0;\n}\n```"
 			},
 			"quizz":[
@@ -31,7 +31,7 @@
 				"fr":"Carte 2"
 			},
 			"content": {
-				"content-type":"readme",
+				"contentType":"readme",
 				"fr": "`argv[0]` contiendra tout le temps le nom du programme\n\n```\nint main(int argc, char *argv[]){\n\tfor(int o=0; o< argc; o++){\n\t\tprintf(\"Argument %d : %s\\n\", o, argv[o]);\n\t}\n\treturn 0;\n}\n```"
 			},
 			"quizz":[
@@ -51,7 +51,7 @@
 				"fr":"CARTE 3"
 			},
 			"content": {
-				"content-type":"readme",
+				"contentType":"readme",
 				"fr": "Commande pour créer un serveur web rapidement\n```sh\n\nnpm install --global http-server\n#or\n\nnpm install -g http-server\n\ncd YOUR-DIRECTORY\n\nhttp-server\n```"
 			},
 			"quizz":[

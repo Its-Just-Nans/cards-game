@@ -107,6 +107,7 @@ function makePopUp(objectWanted, property){
 }
 
 function loadCard(cardData, language){
+    let correctText;
     let oldCard = document.getElementById("card");
     oldCard.id = "oldCard";
     oldCard = document.getElementById("oldCard");
@@ -126,16 +127,8 @@ function loadCard(cardData, language){
     CARDtitle.innerHTML = cardData["title"][language];
     
     let CARDcontent = renderElement(front, "p", "card-content");
-    if(cardData["content-type"] == "readme"){
-        let converter = new showdown.Converter();
-        converter.setFlavor('github');
-        CARDcontent.innerHTML = converter.makeHtml(cardData["content"][language]);
-        document.querySelectorAll('pre code').forEach((block) => {
-            hljs.highlightBlock(block);
-        });
-    }else{
-        CARDcontent.innerHTML = cardData["content"];
-    }
+    correctText = getCorrectText(cardData["content"], language);
+    CARDcontent.innerHTML = correctText;
     CARDcontent.style.textAlign = "initial";
 
     let CARDBackTitle = renderElement(back, "h2", "card-baclk-title");
@@ -221,6 +214,25 @@ function loadCard(cardData, language){
         card.style.animationName = '';
         card.style.animationTimingFunction = '';
     }, time*1000);
+}
+
+function getCorrectText(value, lang){
+    let result = "";
+    if(value["contentType"]){
+        if(value["contentType"] == "readme"){
+            let converter = new showdown.Converter();
+            converter.setFlavor('github');
+            result = converter.makeHtml(value[lang]);
+            document.querySelectorAll('pre code').forEach((block) => {
+                hljs.highlightBlock(block);
+            });
+        }else{
+            //other content type ?
+        }
+    }else{
+        result = value[lang];
+    }
+    return result;
 }
 
 function downloadObjectAsJson(exportObj, exportName){
