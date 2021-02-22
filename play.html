@@ -16,7 +16,11 @@
     <div id="content">
     </div>
 <script>
-if(window.location.hash == '#import'){
+var indexing = 0;
+var allCards;
+var lang = "fr";
+const urlParams = new URLSearchParams(window.location.search);
+if(urlParams.has('import')){
     let content = document.getElementById('content');
     content.innerHTML = '';
     let input = document.createElement('input');
@@ -27,66 +31,46 @@ if(window.location.hash == '#import'){
         var reader = new FileReader();
         reader.onload = function(){
             try{
-                var allCards = JSON.parse(reader.result);
+                allCards = JSON.parse(reader.result);
                 input.remove();
-                var indexing = 0;
-                let buttonPrevious = document.createElement('button');
-                buttonPrevious.innerHTML = "<-";
-                buttonPrevious.onclick = function(){
-                    if(document.getElementById("card").className.includes("flipped")){
-                    document.getElementById("card").className = document.getElementById("card").className.replace(" flipped", '')
-                    }
-                    if((indexing-1) >= 0 ){
-                        indexing = indexing - 1;
-                    loadCard(allCards["cards"][indexing], "fr");
-                }
-            };
-            content.appendChild(buttonPrevious);
-            let buttonNext = document.createElement('button');
-            buttonNext.innerHTML = "->";
-            buttonNext.onclick = function(){
-                if(document.getElementById("card").className.includes("flipped")){
-                    document.getElementById("card").className = document.getElementById("card").className.replace(" flipped", '')
-                }
-                if((indexing+1) < allCards["cards"].length ){
-                    indexing = indexing + 1;
-                    loadCard(allCards["cards"][indexing], "fr");
-                }
-            };
-            content.appendChild(buttonNext);
-            let buttonFlip = document.createElement('button');
-            buttonFlip.innerHTML = "flip card";
-            buttonFlip.onclick = function(){
-                let classes = document.getElementById("card").className.split(' ')
-                if(document.getElementById("card").className.includes("flipped")){
-                    document.getElementById("card").className = document.getElementById("card").className.replace(" flipped", '')
-                }else{
-                    document.getElementById("card").className += " flipped";
-                }
+                renderCards();
+                loadCard(allCards["cards"][indexing], lang);
+            }catch(e){
+                console.log(e);
+                smollPopUp({title: "Error", content : e.toString() }, "ko");
             }
-            content.appendChild(buttonFlip);
-            let card = document.createElement("div");
-            card.id = "card";
-            card.className = "card";
-            content.appendChild(card);
-            let front = document.createElement("div");
-            front.className = "front";
-            card.appendChild(front);
-            let back = document.createElement("div");
-            back.className = "back";
-            card.appendChild(back);
-            
-            loadCard(allCards["cards"][indexing], "fr");
-        }catch(e){
-            console.log(e);
-            smollPopUp({title: "Error", content : e.toString() }, "ko");
-        }
         };
         reader.readAsText(selectedFile);
     }
 }else{
-    //render table
-    //https://api.github.com/repos/Its-Just-Nans/cards-game/contents/data/
+    makeRequest('GET', "https://api.github.com/repos/Its-Just-Nans/cards-game/contents/data/").then( function(response){
+        const apiJSON = JSON.parse(response);
+        const {tbody} = renderTableau(document.getElementById('content'), ["Name", "Path"], false);
+        for(let oneReponse of apiJSON){
+            let tr = document.createElement('tr');
+            addStyle(tr, {
+                "cursor": "pointer"
+            });
+            let td1 = document.createElement('td');
+            let td2 = document.createElement('td');
+            tr.append(td1);
+            tr.append(td2);
+            tbody.append(tr);
+            tr.onclick = function(){
+                const url = `https://its-just-nans.github.io/cards-game/${td2.innerHTML}`;
+                makeRequest('GET', url).then( function(response){
+                    allCards = JSON.parse(response);
+                    document.getElementById('content').innerHTML = "";
+                    renderCards();
+                    loadCard(allCards["cards"][indexing], lang);
+                });
+            };
+            td1.innerHTML = oneReponse.name;
+            td2.innerHTML = oneReponse.path;
+        }
+    }).catch(function (error){
+        console.log('log: ', error);
+    });
 }
 
 </script>

@@ -1,4 +1,5 @@
 function makePopUp(objectWanted, property){
+    return new Promise(resolve => {
     let popUp = document.createElement("div");
     addStyle(popUp, {
         "position"          : "absolute",
@@ -35,7 +36,6 @@ function makePopUp(objectWanted, property){
         "boxSizing"         : "border-box"
     });
     popUp.appendChild(interior);
-
     let head = document.createElement("div");
     addStyle(head, {
         "position"  : "absolute",
@@ -64,10 +64,26 @@ function makePopUp(objectWanted, property){
         "height"    : "50px",
         "padding"   : "10px",
         "borderTop" : "1px solid black",
-        "boxSizing" : "border-box"
+        "boxSizing" : "border-box",
+        "textAlign" : "center"
     });
     interior.appendChild(footer);
-
+    submit = document.createElement('button');
+    submit.innerHTML = "Submit";
+    submit.onclick = function(){
+        for(let oneElement in objectWanted){
+            for(let oneChild of body.childNodes){
+                if(oneChild.localName == "input"){
+                    if(oneChild.name == oneElement){
+                        objectWanted[oneElement] = oneChild.value;
+                    }
+                }
+            }
+        }
+        popUp.remove();
+        resolve(objectWanted);
+    }
+    footer.appendChild(submit);
     for(let element in objectWanted){
         let content = objectWanted[element];
         if(typeof content === 'object' && content !== null){
@@ -77,12 +93,17 @@ function makePopUp(objectWanted, property){
             let input = document.createElement("input");
             let label = document.createElement("label");
             label.innerHTML = element;
+            input.value = content;
+            input.name = element;
             body.appendChild(label);
             body.appendChild(document.createElement("br"));
             body.appendChild(input);
+            body.appendChild(document.createElement("br"));
+            body.appendChild(document.createElement("br"));
 
         }
     }
+    });
 }
 
 function loadCard(cardData, language){
@@ -223,4 +244,83 @@ function renderElement(where, type, id){
         where.appendChild(name);
     }
     return name;
+}
+
+function renderTableau(where, theadData){
+    let table = document.createElement('table');
+    table.id = "tableau";
+    let thead = document.createElement('thead');
+    thead.id = "tableauHead";
+    table.appendChild(thead);
+    let tbody = document.createElement('tbody');
+    tbody.id = "tableauBody";
+    table.appendChild(tbody);
+    let tfoot = document.createElement('tfoot');
+    tfoot.id = "tableauFoot";
+    table.appendChild(tfoot);
+    where.appendChild(table);
+    if(theadData){
+        let tr = document.createElement('tr');
+        for(oneElement of theadData){
+            let td = document.createElement('th');
+            td.innerHTML = oneElement;
+            tr.append(td);
+        }
+        thead.append(tr);
+    }
+    return {
+        table: table,
+        tbody: tbody,
+        thead: thead,
+        tfoot: tfoot
+    };
+}
+
+
+function renderCards(){
+    let buttonPrevious = document.createElement('button');
+    buttonPrevious.innerHTML = "<-";
+    buttonPrevious.onclick = function(){
+        if(document.getElementById("card").className.includes("flipped")){
+        document.getElementById("card").className = document.getElementById("card").className.replace(" flipped", '')
+        }
+        if((indexing-1) >= 0 ){
+            indexing = indexing - 1;
+            loadCard(allCards["cards"][indexing], lang);
+        }
+    };
+    content.appendChild(buttonPrevious);
+    let buttonNext = document.createElement('button');
+    buttonNext.innerHTML = "->";
+    buttonNext.onclick = function(){
+        if(document.getElementById("card").className.includes("flipped")){
+            document.getElementById("card").className = document.getElementById("card").className.replace(" flipped", '')
+        }
+        if((indexing+1) < allCards["cards"].length ){
+            indexing = indexing + 1;
+            loadCard(allCards["cards"][indexing], lang);
+        }
+    };
+    content.appendChild(buttonNext);
+    let buttonFlip = document.createElement('button');
+    buttonFlip.innerHTML = "flip card";
+    buttonFlip.onclick = function(){
+        let classes = document.getElementById("card").className.split(' ')
+        if(document.getElementById("card").className.includes("flipped")){
+            document.getElementById("card").className = document.getElementById("card").className.replace(" flipped", '')
+        }else{
+            document.getElementById("card").className += " flipped";
+        }
+    }
+    content.appendChild(buttonFlip);
+    let card = document.createElement("div");
+    card.id = "card";
+    card.className = "card";
+    content.appendChild(card);
+    let front = document.createElement("div");
+    front.className = "front";
+    card.appendChild(front);
+    let back = document.createElement("div");
+    back.className = "back";
+    card.appendChild(back);
 }
