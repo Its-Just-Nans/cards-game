@@ -3,30 +3,29 @@
 
 <head>
     <title>Cards game by n4n5</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
     <script type="application/javascript" src="./useful.js"></script>
     <!--- README script and style -->
     <script src="//its-just-nans.github.io/js/useful.js"></script>
     <script src="//its-just-nans.github.io/cdn/smollPopUp.js"></script>
-    <link rel="stylesheet" href="//unpkg.com/@highlightjs/cdn-assets@10.4.1/styles/default.min.css">
-    <link rel="stylesheet" href="//its-just-nans.github.io/styleREADME.css">
+    <link rel="stylesheet" href="//unpkg.com/@highlightjs/cdn-assets@10.4.1/styles/default.min.css" />
+    <link rel="stylesheet" href="//its-just-nans.github.io/styleREADME.css" />
     <script type="application/javascript" src="https://unpkg.com/showdown/dist/showdown.min.js"></script>
     <script type="application/javascript" src="//unpkg.com/@highlightjs/cdn-assets@10.4.1/highlight.min.js"></script>
 </head>
 
 <body>
-    <div id="content">
-    </div>
+    <div id="content"></div>
     <script>
         var indexing = 0;
         var allCards;
         var lang = "fr";
+        var content = document.getElementById("content");
         const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.has('import')) {
-            let content = document.getElementById('content');
-            content.innerHTML = '';
-            let input = document.createElement('input');
+        if (urlParams.has("import")) {
+            content.innerHTML = "";
+            let input = document.createElement("input");
             input.type = "file";
             content.appendChild(input);
             input.onchange = function () {
@@ -36,7 +35,7 @@
                     try {
                         allCards = JSON.parse(reader.result);
                         input.remove();
-                        renderCards();
+                        renderCards(content);
                         loadCard(allCards["cards"][indexing], lang);
                     } catch (e) {
                         console.log(e);
@@ -44,38 +43,39 @@
                     }
                 };
                 reader.readAsText(selectedFile);
-            }
+            };
         } else {
-            makeRequest('GET', "https://api.github.com/repos/Its-Just-Nans/cards-game/contents/data/").then(function (response) {
-                const apiJSON = JSON.parse(response);
-                const { tbody } = renderTableau(document.getElementById('content'), ["Name", "Path"], false);
-                for (let oneReponse of apiJSON) {
-                    let tr = document.createElement('tr');
-                    addStyle(tr, {
-                        "cursor": "pointer"
-                    });
-                    let td1 = document.createElement('td');
-                    let td2 = document.createElement('td');
-                    tr.append(td1);
-                    tr.append(td2);
-                    tbody.append(tr);
-                    tr.onclick = function () {
-                        const url = `https://its-just-nans.github.io/cards-game/${td2.innerHTML}`;
-                        makeRequest('GET', url).then(function (response) {
-                            allCards = JSON.parse(response);
-                            document.getElementById('content').innerHTML = "";
-                            renderCards();
-                            loadCard(allCards["cards"][indexing], lang);
+            makeRequest("GET", "https://api.github.com/repos/Its-Just-Nans/cards-game/contents/data/")
+                .then(function (response) {
+                    const apiJSON = JSON.parse(response);
+                    const { tbody } = renderTableau(document.getElementById("content"), ["Name", "Path"], false);
+                    for (let oneReponse of apiJSON) {
+                        let tr = document.createElement("tr");
+                        addStyle(tr, {
+                            cursor: "pointer",
                         });
-                    };
-                    td1.innerHTML = oneReponse.name;
-                    td2.innerHTML = oneReponse.path;
-                }
-            }).catch(function (error) {
-                console.log('log: ', error);
-            });
+                        let td1 = document.createElement("td");
+                        let td2 = document.createElement("td");
+                        tr.append(td1);
+                        tr.append(td2);
+                        tbody.append(tr);
+                        tr.onclick = function () {
+                            const url = `https://its-just-nans.github.io/cards-game/${td2.innerHTML}`;
+                            makeRequest("GET", url).then(function (response) {
+                                allCards = JSON.parse(response);
+                                document.getElementById("content").innerHTML = "";
+                                renderCards(content);
+                                loadCard(allCards["cards"][indexing], lang);
+                            });
+                        };
+                        td1.innerHTML = oneReponse.name;
+                        td2.innerHTML = oneReponse.path;
+                    }
+                })
+                .catch(function (error) {
+                    console.log("log: ", error);
+                });
         }
-
     </script>
 </body>
 

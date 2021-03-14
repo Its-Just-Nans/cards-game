@@ -289,7 +289,7 @@ function renderTableau(where, theadData){
 }
 
 
-function renderCards(){
+function renderCards(content){
     let buttonPrevious = document.createElement('button');
     buttonPrevious.innerHTML = "<-";
     buttonPrevious.onclick = function(){
