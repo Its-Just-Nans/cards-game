@@ -38,7 +38,7 @@
                             loadCard(allCards["cards"][indexing], lang);
                         } catch (e) {
                             console.log(e);
-                            smollPopUp({ title: "Error", content: e.toString() }, "ko");
+                            smollPopUp({ title: "Error", msg: e.toString() }, { type: "ko" });
                         }
                     };
                     reader.readAsText(selectedFile);
