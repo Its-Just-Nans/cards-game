@@ -248,7 +248,7 @@ function renderTableau(where, theadData) {
     let table = generateElement(where, "table", { id: "tableau" });
     let thead = generateElement(table, "thead", { id: "tableauHead" });
     let tbody = generateElement(table, "tbody", { id: "tableauBody" });
-    let tbody = generateElement(table, "tfoot", { id: "tableauFoot" });
+    let tfoot = generateElement(table, "tfoot", { id: "tableauFoot" });
     if (theadData) {
         let tr = document.createElement("tr");
         for (oneElement of theadData) {
